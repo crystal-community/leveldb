@@ -1,4 +1,4 @@
-# LevelDB
+# LevelDB <img src="https://raw.githubusercontent.com/greyblake/crystal-leveldb/master/images/crystal-leveldb.png" alt="crystal levedb" width="48">
 
 Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
@@ -12,7 +12,7 @@ Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
 Debian:
 ```
-apt-get install libleveldb-dev
+apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```
 
 ### shard.yml
