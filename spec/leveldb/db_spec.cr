@@ -134,6 +134,24 @@ describe LevelDB do
         end
 
         out.should eq "k1=v1;k2=v2;k3=v3;"
+
+        db.close
+      end
+    end
+
+    describe "#clear" do
+      it "removes all the keys" do
+        FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)
+        db = LevelDB::DB.new(TEST_DB)
+
+        db.put("k1", "v1")
+        db.put("k2", "v2")
+
+        db.clear
+        db.get("k1").should eq nil
+        db.get("k2").should eq nil
+
+        db.close
       end
     end
   end

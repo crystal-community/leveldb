@@ -108,6 +108,11 @@ module LevelDB
       iterator.destroy
     end
 
+    def clear
+      destroy
+      open
+    end
+
     def finalize
       close if opened? # closing frees @db_ptr automatically
       LibLevelDB.leveldb_free(@options_ptr)
