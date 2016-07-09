@@ -30,6 +30,10 @@ module LevelDB
       check_error!
     end
 
+    def []=(key, val)
+      put(key, val)
+    end
+
     def get(key : String) : String|Nil
       ensure_opened!
 
@@ -37,6 +41,10 @@ module LevelDB
       valptr = LibLevelDB.leveldb_get(@db_ptr, @roptions_ptr, key, key.bytesize, pointerof(vallen), @err_ptr)
       check_error!
       valptr == Pointer(UInt8).null ? nil : String.new(valptr, vallen)
+    end
+
+    def [](key)
+      get(key)
     end
 
     def delete(key : String) : Void

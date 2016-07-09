@@ -109,5 +109,12 @@ describe LevelDB do
       db.close
       db.close
     end
+
+    it "supports #[], #[]= methods" do
+      FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)
+      db = LevelDB::DB.new(TEST_DB)
+      db["name"] = "Sergey"
+      db["name"].should eq "Sergey"
+    end
   end
 end
