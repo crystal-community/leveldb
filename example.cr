@@ -1,9 +1,9 @@
-require "src/leveldb"
+require "./src/leveldb"
 
-db = LevelDB.new("/tmp/leveldb_test")
+db = LevelDB::DB.new("/tmp/leveldb_test")
 
 data = Hash(String, String).new
-1000_000.times do |i|
+10.times do |i|
   key = "key-#{i.to_s}"
   value = "value-#{i.to_s}"
   data[key] = value * 10
@@ -14,7 +14,7 @@ data
 start_time = Time.now
 data.each do |key, val|
   db.put(key, val)
-  #db.get(key)
+  puts db.get(key)
 end
 time = Time.now - start_time
 puts time.to_f

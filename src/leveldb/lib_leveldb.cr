@@ -1,7 +1,6 @@
 @[Link("leveldb")]
 lib LibLevelDB
-  #fun leveldb_open(UInt32) : Void*
-  fun leveldb_open(options : Void*, name : UInt8*,  err : Void*) : Void*
+  fun leveldb_open(options : Void*, name : UInt8*,  errptr : Void*) : Void*
 
   fun leveldb_options_create() : Void*
 
@@ -14,6 +13,4 @@ lib LibLevelDB
   fun leveldb_readoptions_create() : Void*
 
   fun leveldb_get(db : Void*, roptions : Void*, key : UInt8*, keylen : UInt64, vallen : UInt64*, errptr : Void*) : UInt8*
-
-    #leveldb_get(db, roptions, "key", 3, &read_len, &err);
 end
