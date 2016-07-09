@@ -1,39 +1,114 @@
 module LevelDB
   class DB
-    @errptr : Pointer(UInt32)
+    getter :db_ptr
 
-    def initialize(path : String)
-      @error_slice = Slice(UInt32).new(1)
-      @errptr = @error_slice.to_unsafe
+    @snapshot : Snapshot?
 
-      @options = LibLevelDB.leveldb_options_create
-      LibLevelDB.leveldb_options_set_create_if_missing(@options, 1)
+    def initialize(@path : String, create_if_missing : Bool = true, compression : Bool = true)
+      @err_address = 0_u32
+      @err_ptr = pointerof(@err_address) as Pointer(UInt32)
 
-      @woptions = LibLevelDB.leveldb_writeoptions_create
-      @roptions = LibLevelDB.leveldb_readoptions_create()
+      @options_ptr = LibLevelDB.leveldb_options_create
+      LibLevelDB.leveldb_options_set_create_if_missing(@options_ptr, create_if_missing)
+      if compression
+        LibLevelDB.leveldb_options_set_compression(@options_ptr, LibLevelDB::Compression::SNAPPY_COMPRESSION)
+      else
+        LibLevelDB.leveldb_options_set_compression(@options_ptr, LibLevelDB::Compression::NO_COMPORESSEION)
+      end
 
-      @db = LibLevelDB.leveldb_open(@options, "/tmp/leveldb_test", @errptr)
+      @woptions_ptr = LibLevelDB.leveldb_writeoptions_create
+      @roptions_ptr = LibLevelDB.leveldb_readoptions_create
+
+      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, @err_ptr)
+      check_error!
+      @opened = true
+    end
+
+    def put(key : String, value : String) : Void
+      ensure_opened!
+      LibLevelDB.leveldb_put(@db_ptr, @woptions_ptr, key, key.bytesize, value, value.bytesize, @err_ptr)
       check_error!
     end
 
-    def put(key, value)
-      LibLevelDB.leveldb_put(@db, @woptions, key, key.bytesize, value, value.bytesize, @errptr)
-      check_error!
-    end
+    def get(key : String) : String|Nil
+      ensure_opened!
 
-    def get(key : String)
       vallen = 0_u64
-      val_ptr = LibLevelDB.leveldb_get(@db, @roptions, key, key.bytesize, pointerof(vallen), @errptr)
+      valptr = LibLevelDB.leveldb_get(@db_ptr, @roptions_ptr, key, key.bytesize, pointerof(vallen), @err_ptr)
       check_error!
-      String.new(val_ptr, vallen)
+      valptr == Pointer(UInt8).null ? nil : String.new(valptr, vallen)
     end
 
+    def delete(key : String) : Void
+      ensure_opened!
+      LibLevelDB.leveldb_delete(@db_ptr, @woptions_ptr, key, key.bytesize, @err_ptr)
+      check_error!
+    end
+
+    def close : Void
+      return if closed?
+      LibLevelDB.leveldb_close(@db_ptr)
+      @opened = false
+    end
+
+    def open : Void
+      return if opened?
+      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, @err_ptr)
+      check_error!
+      @opened = true
+    end
+
+    def destroy : Void
+      close
+      LibLevelDB.leveldb_destroy_db(@options_ptr, @path, @err_ptr)
+      check_error!
+    end
+
+    def create_snapshot : Snapshot
+      snapshot_ptr = LibLevelDB.leveldb_create_snapshot(@db_ptr)
+      Snapshot.new(self, snapshot_ptr)
+    end
+
+    def set_snapshot(snapshot : Snapshot) : Void
+      raise Error.new("Snapshot does not match database") unless snapshot.db == self
+      LibLevelDB.leveldb_readoptions_set_snapshot(@roptions_ptr, snapshot.__ptr)
+
+      # Keep reference, so if snapshot is in use, it won't be garbage collected
+      @snapshot = snapshot
+    end
+
+    def unset_snapshot : Void
+      LibLevelDB.leveldb_readoptions_set_snapshot(@roptions_ptr, Pointer(Void).null)
+      @snapshot = nil
+    end
+
+    def opened? : Bool
+      @opened
+    end
+
+    def closed? : Bool
+      !opened?
+    end
+
+    def finalize
+      close if opened? # closing frees @db_ptr automatically
+      LibLevelDB.leveldb_free(@options_ptr)
+      LibLevelDB.leveldb_free(@woptions_ptr)
+      LibLevelDB.leveldb_free(@roptions_ptr)
+    end
+
+    @[AlwaysInline]
+    private def ensure_opened!
+      raise Error.new("LevelDB #{@path} is closed.") if closed?
+    end
+
+    @[AlwaysInline]
     private def check_error!
-      address = @error_slice[0].to_i
-      if address != 0
-        ptr = Pointer(UInt8).new(address)
-        puts String.new(ptr)
-        exit 1
+      if @err_address != 0
+        ptr = Pointer(UInt8).new(@err_address)
+        message = String.new(ptr)
+        LibLevelDB.leveldb_free(ptr)
+        raise(Error.new(message))
       end
     end
   end
