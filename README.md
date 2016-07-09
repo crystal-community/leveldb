@@ -51,8 +51,11 @@ db.close
 db.closed? # => true
 db.opened? # => false
 
-# Remove database with all the data
+# Close the database and remove all the data
 db.destroy
+
+# Remove all the keys, keep the database open
+db.clear
 ```
 
 ### Snapshots
