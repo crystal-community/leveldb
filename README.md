@@ -20,7 +20,8 @@ apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```yaml
 dependencies:
   leveldb:
-    github: greyblake/crystal-leveldb
+    github: "greyblake/crystal-leveldb"
+    version: "~> 0.1.0"
 ```
 
 ## Usage
