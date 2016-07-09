@@ -82,6 +82,13 @@ db.unset_snapshot
 db.get("a")  # => nil
 ```
 
+## Performance
+
+There is performance comparison of LevelDB and other stores from
+[Kiwi](https://github.com/greyblake/crystal-kiwi#performance-porn) project.
+
+![LevelDB VS other storages](https://sc-cdn.scaleengine.net/i/8a5361ab85b005f7bfb6ed7941b4a5ef.jpg)
+
 ## Contributors
 
 - [greyblake](https://github.com/greyblake) Sergey Potapov - creator, maintainer
