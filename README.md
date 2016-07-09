@@ -2,6 +2,8 @@
 
 Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
+[![Build Status](https://travis-ci.org/greyblake/crystal-leveldb.svg?branch=master)](https://travis-ci.org/greyblake/crystal-leveldb)
+
 > LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to string values.
 
 ## Installation
