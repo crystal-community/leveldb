@@ -1,5 +1,7 @@
 @[Link("leveldb")]
 lib LibLevelDB
+  alias SizeT = UInt64
+
   enum Compression
     NO_COMPORESSEION
     SNAPPY_COMPRESSION
@@ -34,4 +36,16 @@ lib LibLevelDB
   fun leveldb_readoptions_set_snapshot(roptions : Void*, snapshot : Void*)
 
   fun leveldb_release_snapshot(db : Void*, snapshot : Void*)
+
+  # Iterator
+  fun leveldb_create_iterator(db : Void*, roptions : Void*) : Void*
+  fun leveldb_iter_destroy(iterator : Void *);
+  fun leveldb_iter_next(iterator : Void*)
+  fun leveldb_iter_key(iterator : Void*, klen : SizeT*) : UInt8*
+  fun leveldb_iter_value(iterator : Void*, vlen : SizeT*) : UInt8*
+  fun leveldb_iter_get_error(iterator : Void*, errptr : Void*)
+  fun leveldb_iter_seek_to_first(iterator : Void*)
+  fun leveldb_iter_seek_to_last(iterator : Void*)
+  fun leveldb_iter_seek(iterator : Void*, key : UInt8*, klen : SizeT);
+  fun leveldb_iter_valid(iterator : Void*) : Bool
 end

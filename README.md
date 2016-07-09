@@ -41,6 +41,11 @@ db.get("name")  # => nil
 db["city"] = "Berlin"
 db["city"]  # => "Berlin"
 
+# Iterate through all the keys
+db.each do |key, val|
+  puts "#{key} = #{val}"
+end
+
 # Close database
 db.close
 db.closed? # => true
@@ -52,7 +57,9 @@ db.destroy
 
 ### Snapshots
 
-```
+> Snapshots provide consistent read-only views over the entire state of the key-value store.
+
+```crystal
 db = LevelDB::DB.new("./db")
 
 db.put("a", "1")

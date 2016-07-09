@@ -1,4 +1,4 @@
-require "./spec_helper"
+require "../spec_helper"
 
 describe LevelDB do
   describe "DB" do
@@ -115,6 +115,26 @@ describe LevelDB do
       db = LevelDB::DB.new(TEST_DB)
       db["name"] = "Sergey"
       db["name"].should eq "Sergey"
+      db.close
+    end
+
+    describe "#each" do
+      it "iterates through all the keys" do
+        FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)
+        db = LevelDB::DB.new(TEST_DB)
+
+        out = ""
+
+        db.put("k1", "v1")
+        db.put("k2", "v2")
+        db.put("k3", "v3")
+
+        db.each do |key, val|
+          out += "#{key}=#{val};"
+        end
+
+        out.should eq "k1=v1;k2=v2;k3=v3;"
+      end
     end
   end
 end

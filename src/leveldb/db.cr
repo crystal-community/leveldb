@@ -1,12 +1,12 @@
 module LevelDB
   class DB
-    getter :db_ptr
+    getter :db_ptr, :roptions_ptr
 
     @snapshot : Snapshot?
 
     def initialize(@path : String, create_if_missing : Bool = true, compression : Bool = true)
       @err_address = 0_u32
-      @err_ptr = pointerof(@err_address) as Pointer(UInt32)
+      @err_ptr = pointerof(@err_address) as Pointer(UInt64)
 
       @options_ptr = LibLevelDB.leveldb_options_create
       LibLevelDB.leveldb_options_set_create_if_missing(@options_ptr, create_if_missing)
@@ -96,6 +96,16 @@ module LevelDB
 
     def closed? : Bool
       !opened?
+    end
+
+    def each : Void
+      iterator = Iterator.new(self)
+      iterator.seek_to_first
+      while iterator.valid?
+        yield(iterator.key, iterator.value)
+        iterator.next
+      end
+      iterator.destroy
     end
 
     def finalize

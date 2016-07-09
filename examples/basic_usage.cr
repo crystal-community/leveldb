@@ -9,6 +9,11 @@ db.get("name")  # => "Sergey"
 db.delete("name")
 db.get("name")  # => nil
 
+# Iterate through all the keys
+db.each do |key, val|
+  puts "#{key} = #{val}"
+end
+
 # Close database
 db.close
 
