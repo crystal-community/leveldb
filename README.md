@@ -1,4 +1,4 @@
-# LevelDB <img src="https://raw.githubusercontent.com/greyblake/crystal-leveldb/master/images/crystal-leveldb.png" alt="crystal levedb" width="64">
+# LevelDB <img src="https://raw.githubusercontent.com/greyblake/crystal-leveldb/master/images/crystal-leveldb-logo.png" alt="crystal levedb" width="64">
 
 Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
