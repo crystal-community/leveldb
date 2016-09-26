@@ -6,7 +6,7 @@ module LevelDB
 
     def initialize(@path : String, create_if_missing : Bool = true, compression : Bool = true)
       @err_address = 0_u32
-      @err_ptr = pointerof(@err_address) as Pointer(UInt64)
+       @err_ptr = pointerof(@err_address).as(Pointer(UInt64))
 
       @options_ptr = LibLevelDB.leveldb_options_create
       LibLevelDB.leveldb_options_set_create_if_missing(@options_ptr, create_if_missing)
