@@ -5,8 +5,7 @@ module LevelDB
     @snapshot : Snapshot?
 
     def initialize(@path : String, create_if_missing : Bool = true, compression : Bool = true)
-      @err_address = 0_u32
-      @err_ptr = pointerof(@err_address).as?(Pointer(Void))
+      @err_ptr = uninitialized UInt8*
 
       @options_ptr = LibLevelDB.leveldb_options_create
       LibLevelDB.leveldb_options_set_create_if_missing(@options_ptr, create_if_missing)
@@ -19,14 +18,14 @@ module LevelDB
       @woptions_ptr = LibLevelDB.leveldb_writeoptions_create
       @roptions_ptr = LibLevelDB.leveldb_readoptions_create
 
-      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, @err_ptr)
+      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, out @err_ptr)
       check_error!
       @opened = true
     end
 
     def put(key : String, value : String) : Void
       ensure_opened!
-      LibLevelDB.leveldb_put(@db_ptr, @woptions_ptr, key, key.bytesize, value, value.bytesize, @err_ptr)
+      LibLevelDB.leveldb_put(@db_ptr, @woptions_ptr, key, key.bytesize, value, value.bytesize, out @err_ptr)
       check_error!
     end
 
@@ -34,11 +33,11 @@ module LevelDB
       put(key, val)
     end
 
-    def get(key : String) : String|Nil
+    def get(key : String) : String | Nil
       ensure_opened!
 
       vallen = 0_u64
-      valptr = LibLevelDB.leveldb_get(@db_ptr, @roptions_ptr, key, key.bytesize, pointerof(vallen), @err_ptr)
+      valptr = LibLevelDB.leveldb_get(@db_ptr, @roptions_ptr, key, key.bytesize, pointerof(vallen), out @err_ptr)
       check_error!
       valptr == Pointer(UInt8).null ? nil : String.new(valptr, vallen)
     end
@@ -49,7 +48,7 @@ module LevelDB
 
     def delete(key : String) : Void
       ensure_opened!
-      LibLevelDB.leveldb_delete(@db_ptr, @woptions_ptr, key, key.bytesize, @err_ptr)
+      LibLevelDB.leveldb_delete(@db_ptr, @woptions_ptr, key, key.bytesize, out @err_ptr)
       check_error!
     end
 
@@ -61,14 +60,14 @@ module LevelDB
 
     def open : Void
       return if opened?
-      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, @err_ptr)
+      @db_ptr = LibLevelDB.leveldb_open(@options_ptr, @path, out @err_ptr)
       check_error!
       @opened = true
     end
 
     def destroy : Void
       close
-      LibLevelDB.leveldb_destroy_db(@options_ptr, @path, @err_ptr)
+      LibLevelDB.leveldb_destroy_db(@options_ptr, @path, out @err_ptr)
       check_error!
     end
 
@@ -127,10 +126,9 @@ module LevelDB
 
     @[AlwaysInline]
     private def check_error!
-      if @err_address != 0
-        ptr = Pointer(UInt8).new(@err_address)
-        message = String.new(ptr)
-        LibLevelDB.leveldb_free(ptr)
+      if @err_ptr
+        message = String.new(@err_ptr)
+        LibLevelDB.leveldb_free(@err_ptr)
         raise(Error.new(message))
       end
     end
