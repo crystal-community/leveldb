@@ -12,6 +12,10 @@ module LevelDB
       LibLevelDB.leveldb_iter_seek_to_last(@iter_ptr)
     end
 
+    def seek(key)
+      LibLevelDB.leveldb_iter_seek(@iter_ptr, key, key.bytesize)
+    end
+
     def valid?
       LibLevelDB.leveldb_iter_valid(@iter_ptr)
     end
