@@ -1,8 +1,8 @@
-# LevelDB <img src="https://raw.githubusercontent.com/greyblake/crystal-leveldb/master/images/crystal-leveldb-logo2.png" alt="crystal levedb" width="48">
+# LevelDB <img src="https://raw.githubusercontent.com/crystalium/leveldb/master/images/crystal-leveldb-logo2.png" alt="crystal levedb" width="48">
 
 Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
-[![Build Status](https://travis-ci.org/greyblake/crystal-leveldb.svg?branch=master)](https://travis-ci.org/greyblake/crystal-leveldb)
+[![Build Status](https://travis-ci.org/crystalium/leveldb.svg?branch=master)](https://travis-ci.org/crystalium/leveldb)
 
 > LevelDB is a fast key-value storage library written at Google that provides an ordered mapping from string keys to string values.
 
@@ -20,7 +20,7 @@ apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```yaml
 dependencies:
   leveldb:
-    github: "greyblake/crystal-leveldb"
+    github: "crystalium/leveldb"
     version: "~> 0.1.0"
 ```
 
