@@ -30,4 +30,20 @@ describe LevelDB::Iterator do
     iterator.destroy
     db.close
   end
+
+  it "seeks" do
+    FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)
+
+    db = LevelDB::DB.new(TEST_DB)
+    db.put("dontseekme", "failure")
+    db.put("seekmeinstead", "success")
+
+    iterator = LevelDB::Iterator.new(db)
+    iterator.seek("seek")
+
+    iterator.key.should eq "seekmeinstead"
+    iterator.value.should eq "success"
+    iterator.destroy
+    db.close
+  end
 end

@@ -12,7 +12,7 @@ Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
 Debian:
 ```
-apt-get install libleveldb-dev libleveldb1 libsnappy1
+sudo apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```
 
 ### shard.yml
@@ -20,8 +20,8 @@ apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```yaml
 dependencies:
   leveldb:
-    github: "crystal-community/leveldb"
-    version: "~> 0.1.0"
+    github: "crystal-community/crystal-leveldb"
+    version: "~> 0.2.0"
 ```
 
 ## Usage
@@ -92,3 +92,4 @@ There is performance comparison of LevelDB and other stores from
 ## Contributors
 
 - [greyblake](https://github.com/greyblake) Sergey Potapov - creator, maintainer
+- [twisterghost](https://github.com/twisterghost) Michael Barrett
