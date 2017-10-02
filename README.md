@@ -20,7 +20,7 @@ sudo apt-get install libleveldb-dev libleveldb1 libsnappy1
 ```yaml
 dependencies:
   leveldb:
-    github: "crystal-community/crystal-leveldb"
+    github: "crystal-community/leveldb"
     version: "~> 0.2.0"
 ```
 
