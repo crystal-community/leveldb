@@ -5,9 +5,9 @@ db = LevelDB::DB.new("/tmp/leveldb_example_basic_usage")
 
 # Put, get, delete
 db.put("name", "Sergey")
-db.get("name")  # => "Sergey"
+db.get("name") # => "Sergey"
 db.delete("name")
-db.get("name")  # => nil
+db.get("name") # => nil
 
 # Iterate through all the keys
 db.each do |key, val|

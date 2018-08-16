@@ -7,7 +7,7 @@ module LevelDB
     def initialize(@path : String, create_if_missing : Bool = true, compression : Bool = true)
       @err_address = 0_u32
       @err_ptr = pointerof(@err_address).as(Pointer(UInt64))
-      
+
       @options_ptr = LibLevelDB.leveldb_options_create
       LibLevelDB.leveldb_options_set_create_if_missing(@options_ptr, create_if_missing)
       if compression
@@ -34,7 +34,7 @@ module LevelDB
       put(key, val)
     end
 
-    def get(key : String) : String|Nil
+    def get(key : String) : String | Nil
       ensure_opened!
 
       vallen = 0_u64
@@ -50,6 +50,13 @@ module LevelDB
     def delete(key : String) : Void
       ensure_opened!
       LibLevelDB.leveldb_delete(@db_ptr, @woptions_ptr, key, key.bytesize, @err_ptr)
+      check_error!
+    end
+
+    def write(batch : Batch)
+      ensure_opened!
+      LibLevelDB.leveldb_write(@db_ptr, @woptions_ptr, batch.batch_ptr, @err_ptr)
+      LibLevelDB.leveldb_writebatch_destroy(batch.batch_ptr)
       check_error!
     end
 
