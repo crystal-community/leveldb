@@ -10,6 +10,10 @@ module LevelDB
       LibLevelDB.leveldb_writebatch_put(@batch_ptr, key, key.bytesize, value, value.bytesize)
     end
 
+    def []=(key, val)
+      put(key, val)
+    end
+
     def delete(key : String)
       LibLevelDB.leveldb_writebatch_delete(@batch_ptr, key, key.bytesize)
     end

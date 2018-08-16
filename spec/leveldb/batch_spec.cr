@@ -9,7 +9,7 @@ describe LevelDB::Batch do
     batch.put("a", "2")
     batch.put("b", "3")
     batch.put("c", "4")
-    batch.put("d", "5")
+    batch["d"] = "5"
     batch.delete("b")
 
     db.write(batch)
