@@ -61,6 +61,37 @@ db.destroy
 db.clear
 ```
 
+### Batches 
+> Apply a atomic batch of of operation to the key-value store.
+
+```crystal
+require "leveldb"
+
+db = LevelDB::DB.new("./db")
+begin
+  batch = LevelDB::Batch.new
+
+  batch.put("name","Martin")
+  batch.put("age","25")
+  batch.put("location","Bariloche")
+  batch.delete("age")
+
+  # write batch to the db in atomic way
+  db.write(batch)
+
+  puts db.get("name")
+  puts db.get("age") # nil
+  puts db.get("location")
+ensure
+  # free memory 
+  batch.destroy 
+  # close the database
+  db.close
+end
+
+
+```
+
 ### Snapshots
 
 > Snapshots provide consistent read-only views over the entire state of the key-value store.
@@ -81,6 +112,7 @@ db.get("a")  # => "1"
 db.unset_snapshot
 db.get("a")  # => nil
 ```
+
 
 ## Performance
 
