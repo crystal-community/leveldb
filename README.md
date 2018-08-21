@@ -12,7 +12,7 @@ Crystal binding for [LevelDB](https://github.com/google/leveldb).
 
 Debian:
 ```
-sudo apt-get install libleveldb-dev libleveldb1 libsnappy1
+sudo apt-get install libleveldb-dev libleveldb1v5 libsnappy1v5
 ```
 
 ### shard.yml
