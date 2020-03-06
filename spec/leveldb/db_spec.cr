@@ -139,6 +139,27 @@ describe LevelDB do
       end
     end
 
+    describe "#reverse_each" do
+      it "iterates through all the keys in reverse" do
+        FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)
+        db = LevelDB::DB.new(TEST_DB)
+
+        out = ""
+
+        db.put("k1", "v1")
+        db.put("k2", "v2")
+        db.put("k3", "v3")
+
+        db.reverse_each do |key, val|
+          out += "#{key}=#{val};"
+        end
+
+        out.should eq "k3=v3;k2=v2;k1=v1;"
+
+        db.close
+      end
+    end
+
     describe "#clear" do
       it "removes all the keys" do
         FileUtils.rm_r(TEST_DB) if Dir.exists?(TEST_DB)

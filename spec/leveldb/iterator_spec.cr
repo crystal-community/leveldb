@@ -27,6 +27,12 @@ describe LevelDB::Iterator do
     iterator.seek_to_last
     iterator.key.should eq "k2"
 
+    iterator.prev
+    iterator.key.should eq "k1"
+
+    iterator.prev
+    iterator.valid?.should eq false
+
     iterator.destroy
     db.close
   end
