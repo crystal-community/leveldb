@@ -37,6 +37,7 @@ lib LibLevelDB
   fun leveldb_create_iterator(db : Void*, roptions : Void*) : Void*
   fun leveldb_iter_destroy(iterator : Void*)
   fun leveldb_iter_next(iterator : Void*)
+  fun leveldb_iter_prev(iterator : Void*)
   fun leveldb_iter_key(iterator : Void*, klen : SizeT*) : UInt8*
   fun leveldb_iter_value(iterator : Void*, vlen : SizeT*) : UInt8*
   fun leveldb_iter_get_error(iterator : Void*, errptr : Void*)
