@@ -21,7 +21,7 @@ sudo apt-get install libleveldb-dev libleveldb1v5 libsnappy1v5
 dependencies:
   leveldb:
     github: "crystal-community/leveldb"
-    version: "~> 0.2.0"
+    version: "~> 0.3.0"
 ```
 
 ## Usage
