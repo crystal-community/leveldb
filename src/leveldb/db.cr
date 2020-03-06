@@ -106,13 +106,15 @@ module LevelDB
     end
 
     def each : Void
-      iterator = Iterator.new(self)
-      iterator.seek_to_first
-      while iterator.valid?
-        yield(iterator.key, iterator.value)
-        iterator.next
+      iterate do |key, value|
+        yield(key, value)
       end
-      iterator.destroy
+    end
+
+    def reverse_each : Void
+      iterate(true) do |key, value|
+        yield(key, value)
+      end
     end
 
     def clear
@@ -140,6 +142,25 @@ module LevelDB
         LibLevelDB.leveldb_free(ptr)
         raise(Error.new(message))
       end
+    end
+
+    private def iterate(reversed : Bool = false) : Void
+      iterator = Iterator.new(self)
+      if reversed
+        iterator.seek_to_last
+      else
+        iterator.seek_to_first
+      end
+
+      while iterator.valid?
+        yield(iterator.key, iterator.value)
+        if reversed
+          iterator.prev
+        else
+          iterator.next
+        end
+      end
+      iterator.destroy
     end
   end
 end

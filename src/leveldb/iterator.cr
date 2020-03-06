@@ -36,6 +36,10 @@ module LevelDB
       LibLevelDB.leveldb_iter_next(@iter_ptr)
     end
 
+    def prev
+      LibLevelDB.leveldb_iter_prev(@iter_ptr)
+    end
+
     def destroy
       LibLevelDB.leveldb_iter_destroy(@iter_ptr)
     end
